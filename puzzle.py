@@ -9,7 +9,7 @@ word_map = {}
 
 PANGRAM_LENGTH = 7
 
-def main():
+def main(letters=None):
   global correct_guesses
   global solution
   global word_map
@@ -27,15 +27,19 @@ def main():
   make_word_map(words)
 
   # Select random puzzle
-  letters = get_puzzle()
+  if not letters:
+    letters = get_puzzle()
   solution = solver.getMatches(letters)
 
   # Validate guesses
   play(letters)
 
-  if 'y' == raw_input('Would you like to play again? (y/N): ').lower():
-    correct_guesses = []
+  correct_guesses = []
+  response = raw_input('Would you like to play again? (y/N): ').lower()
+  if 'y' == response:
     main()
+  elif len(response) == 7:
+    main(response)
 
 def get_words():
   file = open('ww7.txt')
