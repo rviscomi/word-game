@@ -114,10 +114,13 @@ def play(letters):
   PURPLE = '\033[0;35m'
   NC = '\033[0m'
 
-  formatted_letters = ' %s %s\n%s %s%s%s %s\n %s %s' % (
-    letters[1], letters[2],
-    letters[3], YELLOW, letters[0], NC, letters[4],
-    letters[5], letters[6])
+  def format_letters():
+    return ' %s %s\n%s %s%s%s %s\n %s %s' % (
+      letters[1], letters[2],
+      letters[3], YELLOW, letters[0], NC, letters[4],
+      letters[5], letters[6])
+
+  formatted_letters = format_letters()
 
   guess = ''
   while not is_solved():
@@ -136,6 +139,13 @@ def play(letters):
       while hint in correct_guesses:
         hint = random.sample(solution, 1)
       print('%sHint: %s%s' % (PURPLE, hint[:3], NC))
+      continue
+
+    if guess == 's':
+      shuffled = list(letters[1:])
+      random.shuffle(shuffled)
+      letters = letters[:1] + ''.join(shuffled)
+      formatted_letters = format_letters()
       continue
 
     if base not in guess:
