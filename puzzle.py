@@ -148,6 +148,11 @@ def play(letters):
       formatted_letters = format_letters()
       continue
 
+    if guess == 'konami code':
+      correct_guesses = solution
+      print(', '.join(solution))
+      continue
+
     if base not in guess:
       print('%sGuess does not contain the base letter (%s) %s' % (RED, base, NC))
     elif guess in correct_guesses:
