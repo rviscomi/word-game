@@ -1,5 +1,4 @@
 # word-game
 Make words from random letters
 
-![image](https://user-images.githubusercontent.com/1120896/82769200-80b93a00-9e01-11ea-8caf-c53e3b91b6aa.png)
-
+![image](https://user-images.githubusercontent.com/1120896/82769312-0210cc80-9e02-11ea-97b9-31e2e07bf10b.png)
