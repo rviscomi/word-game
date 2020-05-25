@@ -110,8 +110,14 @@ def play(letters):
 
   RED = '\033[0;31m'
   GREEN = '\033[0;32m'
+  YELLOW = '\033[0;33m'
   PURPLE = '\033[0;35m'
   NC = '\033[0m'
+
+  formatted_letters = ' %s %s\n%s %s%s%s %s\n %s %s' % (
+    letters[1], letters[2],
+    letters[3], YELLOW, letters[0], NC, letters[4],
+    letters[5], letters[6])
 
   guess = ''
   while not is_solved():
@@ -119,8 +125,8 @@ def play(letters):
     print('')
     if len(correct_guesses) > 0:
       print(correct_guesses)
-    print('Your letters are: %s' % ' '.join(list(letters)))
-    guess = raw_input('[%s] (%d/%d) Enter your guess (or "q" to quit): ' % (letters, n, m)).lower()
+    print(formatted_letters)
+    guess = raw_input('[%d/%d) Enter your guess (or "q" to quit): ' % (n, m)).lower()
 
     if guess == 'q':
       break
@@ -129,22 +135,22 @@ def play(letters):
       hint = ''
       while hint in correct_guesses:
         hint = random.sample(solution, 1)
-      print('[%s] %sHint: %s%s' % (letters, PURPLE, hint[:3], NC))
+      print('%sHint: %s%s' % (PURPLE, hint[:3], NC))
       continue
 
     if base not in guess:
-      print('[%s] %sGuess does not contain the base letter (%s) %s' % (letters, RED, base, NC))
+      print('%sGuess does not contain the base letter (%s) %s' % (RED, base, NC))
     elif guess in correct_guesses:
-      print('[%s] %sAlready guessed%s' % (letters, RED, NC))
+      print('%sAlready guessed%s' % (RED, NC))
     elif guess in solution:
       if len(''.join(set(guess))) == 7:
-        print('[%s] %sPANGRAM!!%s' % (letters, GREEN, NC))
+        print('%sPANGRAM!!%s' % (GREEN, NC))
       else:
-        print('[%s] %sCorrect!%s' % (letters, GREEN, NC))
+        print('%sCorrect!%s' % (GREEN, NC))
       correct_guesses.append(guess)
       correct_guesses.sort()
     else:
-      print('[%s] %sUnrecognized guess%s' % (letters, RED, NC))
+      print('%sUnrecognized guess%s' % (RED, NC))
 
   if is_solved():
     print('%sYOU WIN!%s' % (GREEN, NC))
