@@ -33,7 +33,7 @@ def main():
   # Validate guesses
   play(letters)
 
-  if 'y' == raw_input('Would you like to play again? (y/n): ').lower():
+  if 'y' == raw_input('Would you like to play again? (y/N): ').lower():
     correct_guesses = []
     main()
 
@@ -127,7 +127,7 @@ def play(letters):
     n = len(correct_guesses)
     print('')
     if len(correct_guesses) > 0:
-      print(correct_guesses)
+      print(', '.join(correct_guesses))
     print(formatted_letters)
     guess = raw_input('[%d/%d) Enter your guess (or "q" to quit): ' % (n, m)).lower()
 
@@ -136,8 +136,8 @@ def play(letters):
 
     if guess == 'h':
       hint = ''
-      while hint in correct_guesses:
-        hint = random.sample(solution, 1)
+      while hint == '' or hint in correct_guesses:
+        hint = random.sample(solution, 1)[0]
       print('%sHint: %s%s' % (PURPLE, hint[:3], NC))
       continue
 
@@ -163,7 +163,7 @@ def play(letters):
       print('%sUnrecognized guess%s' % (RED, NC))
 
   if is_solved():
-    print('%sYOU WIN!%s' % (GREEN, NC))
+    print('%s*~YOU WIN!~*%s' % (GREEN, NC))
   else:
     print('%sGame over%s' % (RED, NC))
 
@@ -171,7 +171,7 @@ def is_solved():
   global correct_guesses
   global solution
 
-  return solution == correct_guesses
+  return len(solution) == len(correct_guesses)
 
 
 main()
