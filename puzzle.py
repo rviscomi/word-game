@@ -132,7 +132,9 @@ def play(letters):
     print('')
     if len(correct_guesses) > 0:
       print(', '.join(correct_guesses))
+    print('')
     print(formatted_letters)
+    print('')
     guess = raw_input('[%d/%d) Enter your guess (or "q" to quit): ' % (n, m)).lower()
 
     if guess == 'q':
@@ -142,7 +144,13 @@ def play(letters):
       hint = ''
       while hint == '' or hint in correct_guesses:
         hint = random.sample(solution, 1)[0]
-      print('%sHint: %s%s' % (PURPLE, hint[:3], NC))
+      hint_length = 3
+      if random.random() * 1000 < 1:
+        hint_length = 10
+      elif random.random() * 100 < 1:
+        hint_length = 5
+      print('%sHint: %s%s%s' % (PURPLE, hint[:hint_length],
+        ''.join(['_' for i in hint[hint_length:]]), NC))
       continue
 
     if guess == 's':
@@ -157,7 +165,9 @@ def play(letters):
       print(', '.join(solution))
       continue
 
-    if base not in guess:
+    if len(guess) < 4:
+      print('%sGuesses must be at least 4 letters%s' % (RED, NC))
+    elif base not in guess:
       print('%sGuess does not contain the base letter (%s) %s' % (RED, base, NC))
     elif guess in correct_guesses:
       print('%sAlready guessed%s' % (RED, NC))
