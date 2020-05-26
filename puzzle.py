@@ -150,7 +150,7 @@ def play(letters):
       elif random.random() * 100 < 1:
         hint_length = 5
       print('%sHint: %s%s%s' % (PURPLE, hint[:hint_length],
-        ''.join(['_' for i in hint[hint_length:]]), NC))
+        ''.join(['.' for i in hint[hint_length:]]), NC))
       continue
 
     if guess == 's':
@@ -161,8 +161,9 @@ def play(letters):
       continue
 
     if guess == 'konami code':
+      highlighted_solution = ['%s%s%s' % (GREEN, i, NC) if i in correct_guesses else '%s%s%s' % (PURPLE, i, NC) for i in solution]
       correct_guesses = solution
-      print(', '.join(solution))
+      print(', '.join(highlighted_solution))
       continue
 
     if len(guess) < 4:
