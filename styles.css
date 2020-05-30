@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  margin: 0;
+  padding: 0
+  font-family: sans-serif;
+  height: 100vh;
+}
+
+#inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#outputs {
+  display: flex;
+  flex-direction: column;
+}
+
+#guess-form {
+  margin-bottom: 10px;
+}
+
+#guess {
+  border: none;
+  color: #222;
+  font-size: 60px;
+  text-align: center;
+  text-transform: uppercase;
+  caret-color: gold;
+}
+#guess:focus {
+  outline: none;
+}
+
+#toast {
+  content: '';
+  border-radius: 3px;
+  padding: 5px 10px;
+  min-height: 28px;
+  background-color: #222;
+  color: #eee;
+  font-size: 18px;
+  transition: all 100ms;
+}
+#toast.hidden {
+  opacity: 0;
+}
+
+#letters {
+  width: 300px;
+  margin: 25px 0 0 -10px;
+}
+.letter {
+  position: relative;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 60px;
+  height: 104px;
+  background-color: #eee;
+  color: #222;
+  font-size: 60px;
+}
+.letter:before,
+.letter:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  border-top: 52px solid transparent;
+  border-bottom: 52px solid transparent;
+}
+.letter:before {
+  left: -30px;
+  border-right: 30px solid #eee;
+}
+.letter:after {
+  right: -30px;
+  border-left: 30px solid #eee;
+}
+
+.letter.base {
+  background-color: gold;
+}
+.letter.base:before {
+  border-right-color: gold;
+}
+.letter.base:after {
+  border-left-color: gold;
+}
+
+.letter:focus {
+  outline: none;
+}
+.letter:active {
+  background-color: #ddd;
+}
+.letter:active:before {
+  border-right-color: #ddd;
+}
+.letter:active:after {
+  border-left-color: #ddd;
+}
+
+.letter,
+.letter:before,
+.letter:after {
+  transition: all 100ms;
+}
+
+.letter.base:active {
+  background-color: hsla(51, 100%, 45%, 1);
+}
+.letter.base:active:before {
+  border-right-color: hsla(51, 100%, 45%, 1);
+}
+.letter.base:active:after {
+  border-left-color: hsla(51, 100%, 45%, 1);
+}
+
+.letter:nth-child(n+2) {
+  margin-top: -50px;
+}
+.letter:nth-child(n+5) {
+  margin-top: -48px;
+}
+.letter:nth-child(1),
+.letter:nth-child(4),
+.letter:nth-child(7) {
+  margin-left: 125px;
+  margin-right: 120px;
+}
+.letter:nth-child(2),
+.letter:nth-child(5) {
+  margin-left: 30px;
+  margin-right: 130px;
+}
+
+#progress {
+  font-size: 26px;
+  color: #222;
+}
+
+#guesses {
+  columns: auto auto;
+}
+
+.guess {
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-size: 30px;
+  color: #222;
+}

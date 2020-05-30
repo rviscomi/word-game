@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="inputs">
+      <form id="guess-form">
+        <input id="guess" autocomplete="off">
+      </form>
+      <div id="toast" class="hidden">&nbsp;</div>
+      <div id="letters"></div>
+    </div>
+    <div id="outputs">
+      <div id="progress"></div>
+      <div id="guesses"></div>
+    </div>
+    <script type="module">
+import Game from './game.js';
+
+const DEBUG = true;
+
+const game = new Game('hard');
+
+if (DEBUG) window.game = game;
+    </script>
+  </body>
+</html>
