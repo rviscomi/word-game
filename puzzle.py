@@ -87,17 +87,17 @@ def is_too_hard(candidate):
 
   solution = solver.getMatches(candidate)
 
-  # Must have 5 or more words.
-  if len(solution) < 5:
+  # Must have 10 or more words.
+  if len(solution) < 10:
     #print('Candidate (%s) has too few words: %r' % (candidate, solution))
     return True
 
-  if len(solution) > 50:
+  if len(solution) > 100:
     #print('Cnadidate (%s) has too many words: %d' % (candidate, len(solution)))
     return True
 
-  # Must have 3 or more words of 3-4 letters
-  if len([i for i in solution if len(i) < 5]) < 3:
+  # Must have 10 or more 4-letter words.
+  if len([i for i in solution if len(i) < 5]) < 10:
     #print('Candidate (%s) has too few easy words: %r' % (candidate, solution))
     return True
 
@@ -135,7 +135,7 @@ def play(letters):
     print('')
     print(formatted_letters)
     print('')
-    guess = raw_input('[%d/%d) Enter your guess (or "q" to quit): ' % (n, m)).lower()
+    guess = raw_input('[%d/%d] Enter your guess (or "q" to quit): ' % (n, m)).lower()
 
     if guess == 'q':
       break
@@ -184,6 +184,8 @@ def play(letters):
 
   if is_solved():
     print('%s*~YOU WIN!~*%s' % (GREEN, NC))
+    if guess != 'konami code':
+      print(', '.join(['%s%s%s' % (GREEN, i, NC) for i in correct_guesses]))
   else:
     print('%sGame over%s' % (RED, NC))
 
