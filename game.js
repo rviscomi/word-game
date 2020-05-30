@@ -1,8 +1,8 @@
 export default class Game {
-  constructor(difficulty, letters) {
+  constructor() {
     this.ui = new UI();
-    this.difficulty = difficulty || 'easy';
-    this.letters = letters;
+    this.difficulty = this.getDifficulty();
+    this.letters = null;
     this.solution = null;
     this.guesses = new Set();
     this.loadPuzzles().then(puzzles => {
@@ -12,16 +12,8 @@ export default class Game {
   }
 
   init() {
-    if (this.letters) {
-      this.solution = new Set(this.puzzles[this.letters]);
-
-      if (!this.solution) {
-        throw `${this.difficulty} puzzle does not have letters ${this.letters}`;
-      }
-    } else {
-      this.letters = this.getLetters();
-      this.solution = new Set(this.puzzles[this.letters]);
-    }
+    this.letters = this.getLetters();
+    this.solution = this.getSolution();
 
     this.ui.init();
     this.ui.renderLetters(this.letters);
@@ -33,10 +25,32 @@ export default class Game {
     return fetch(`${this.difficulty}.json`).then(r => r.json());
   }
 
+  getDifficulty() {
+    return this.getParam('difficulty') || 'easy';
+  }
+
   getLetters() {
+    let letters = this.getParam('letters');
+    if (letters) {
+      return letters.toLowerCase();
+    }
+
     const candidates = Object.keys(this.puzzles);
     const i = Math.floor(Math.random() * candidates.length);
     return candidates[i];
+  }
+
+  getSolution() {
+    if (!(this.letters in this.puzzles)) {
+      throw `${this.difficulty} puzzle does not have letters ${this.letters}`;
+    }
+
+    return new Set(this.puzzles[this.letters]);
+  }
+
+  getParam(key) {
+    const url = new URL(location.href);
+    return url.searchParams.get(key);
   }
 
   checkGuess(guess) {
@@ -142,7 +156,20 @@ class UI {
     element.innerText = letter.toUpperCase();
     element.classList.add('letter');
     element.classList.toggle('base', isBase);
+    element.addEventListener('click', e => {
+      this.addLetter(letter);
+    });
     return element;
+  }
+
+  addLetter(letter) {
+    // Splice a letter into the guess at the caret position.
+    const letters = Array.from(this.guess.value);
+    const start = this.guess.selectionStart;
+    const end = this.guess.selectionEnd;
+    const deleteCount = Math.abs(end - start);
+    letters.splice(start, deleteCount, letter);
+    this.guess.value = letters.join('');
   }
 
   insertGuess(guess) {

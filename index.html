@@ -12,6 +12,10 @@
       </form>
       <div id="toast" class="hidden">&nbsp;</div>
       <div id="letters"></div>
+      <div id="controls">
+        <button id="hint">Hint</button>
+        <button id="shuffle">Shuffle</button>
+      </div>
     </div>
     <div id="outputs">
       <div id="progress"></div>
@@ -22,7 +26,7 @@ import Game from './game.js';
 
 const DEBUG = true;
 
-const game = new Game('hard');
+const game = new Game();
 
 if (DEBUG) window.game = game;
     </script>
