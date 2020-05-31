@@ -40,6 +40,9 @@ def get_puzzles():
   for puzzle in word_map.keys():
     if len(puzzle) != PANGRAM_LENGTH:
       continue
+    if puzzle[0] == '\'':
+      # Some words in the dictionary have apostrophes.
+      continue
 
     solution = solver.getMatches(puzzle)
     difficulty = get_difficulty(solution)

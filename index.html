@@ -18,8 +18,19 @@
       </div>
     </div>
     <div id="outputs">
-      <div id="progress"></div>
       <div id="guesses"></div>
+    </div>
+    <div id="stats">
+      <div id="progress-bar"></div>
+      <button id="toggle-stats">expand/collapse</button>
+      <div>Found <span id="found">0</span> of <span id="total">0</span> words</div>
+      <div id="expanded-stats" class="hidden">
+        <div>Longest word: <span id="longest">0</span> letters</div>
+        <div>Most distinct letters: <span id="most-letters">0</span></div>
+        <div>Average word length: <span id="avg-length">0</span> letters</div>
+        <div>Words per minute: <span id="wpm">0</span></div>
+        <div>Hints used: <span id="hints">0</span></div>
+      </div>
     </div>
     <script type="module">
 import Game from './game.js';

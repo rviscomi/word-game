@@ -1,6 +1,10 @@
+import Stats from './stats.js';
+import UI from './ui.js';
+
 export default class Game {
   constructor() {
-    this.ui = new UI();
+    this.ui = new GameUI();
+    this.stats = new Stats();
     this.difficulty = this.getDifficulty();
     this.letters = null;
     this.solution = null;
@@ -17,8 +21,13 @@ export default class Game {
 
     this.ui.init();
     this.ui.renderLetters(this.letters);
-    this.ui.updateProgress(this.guesses.size, this.solution.size);
     this.ui.handleGuess = this.checkGuess.bind(this);
+    this.ui.handleHint = this.getHint.bind(this);
+    this.ui.handleShuffle = this.shuffle.bind(this);
+
+    this.stats.foundWords = this.guesses;
+    this.stats.totalWordCount = this.solution.size;
+    this.stats.toggleStats(this.getParam('stats') === null);
   }
 
   loadPuzzles() {
@@ -55,41 +64,72 @@ export default class Game {
 
   checkGuess(guess) {
     if (this.guesses.has(guess)) {
-      this.ui.setToast(UI.Message.REPEAT_GUESS);
+      this.ui.setToast(GameUI.Message.REPEAT_GUESS);
     } else if (guess.length < 4) {
-      this.ui.setToast(UI.Message.SHORT_GUESS);
+      this.ui.setToast(GameUI.Message.SHORT_GUESS);
     } else if (this.solution.has(guess)) {
       this.setCorrect(guess);
     } else if (!guess.includes(this.letters[0])) {
-      this.ui.setToast(UI.Message.CENTER_LETTER);
+      this.ui.setToast(GameUI.Message.CENTER_LETTER);
     } else {
-      this.ui.setToast(UI.Message.INCORRECT);
+      this.ui.setToast(GameUI.Message.INCORRECT);
     }
 
-    this.ui.updateProgress(this.guesses.size, this.solution.size);
     this.ui.clearGuess();
   }
 
   setCorrect(guess) {
-    let message = UI.Message.CORRECT;
+    let message = GameUI.Message.CORRECT;
     this.guesses.add(guess);
 
     if (this.guesses.size === this.solution.size) {
-      message = UI.Message.WIN;
+      message = GameUI.Message.WIN;
     } else if (new Set(guess).size >= 7) {
-      message = UI.Message.PANGRAM;
+      message = GameUI.Message.PANGRAM;
     }
 
     this.ui.setToast(message);
     this.ui.insertGuess(guess);
+
+    this.stats.foundWord = guess;
+    this.stats.foundWords = this.guesses;
   }
 
-  setIncorrect() {
-    this.ui.setIncorrect();
+  getHint() {
+    // Get random unguessed word.
+    const hints = Array.from(this.solution).filter(hint => !this.guesses.has(hint));
+    const hint = hints[Math.floor(Math.random() * hints.length)];
+    // Take random substring of hint.
+    const percent = Math.random() * 100;
+    const letters = 3;
+    if (percent < 0.1) {
+      letters = hint.length;
+    } else if (percent < 1) {
+      letters = 7;
+    } else if (percent < 5) {
+      letters = 5;
+    }
+    const partialHint = hint.substring(0, letters);
+    // Show hint.
+    this.ui.showHint(partialHint);
+    this.ui.setToast(`${hint.length} letters`)
+    this.stats.countHint();
+  }
+
+  shuffle() {
+    let letters = Array.from(this.letters);
+    for (let i = 1; i < letters.length; i++) {
+      const j = Math.floor(Math.random() * (letters.length - i)) + i;
+      const temp = letters[i];
+      letters[i] = letters[j];
+      letters[j] = temp;
+    }
+    this.letters = letters.join('');
+    this.ui.renderLetters(this.letters);
   }
 }
 
-class UI {
+class GameUI {
   static Message = {
     REPEAT_GUESS: 'Already guessed',
     SHORT_GUESS: 'Words must be at least 4 letters',
@@ -101,58 +141,93 @@ class UI {
   };
 
   constructor() {
-    this.letters = this.getEl('letters');
-    this.guess = this.getEl('guess');
-    this.form = this.getEl('guess-form');
-    this.toast = this.getEl('toast');
-    this.progress = this.getEl('progress');
-    this.guesses = this.getEl('guesses');
+    this.letters = UI.getEl('letters');
+    this.guess = UI.getEl('guess');
+    this.form = UI.getEl('guess-form');
+    this.toast = UI.getEl('toast');
+    this.guesses = UI.getEl('guesses');
+    this.hint = UI.getEl('hint');
+    this.shuffle = UI.getEl('shuffle');
   }
 
   init() {
     this.form.addEventListener('submit', e => {
       e.preventDefault();
-      if (!this.handleGuess) {
-        throw `Unhandled guess`;
-      }
-      const guess = this.guess.value.toLowerCase();
-      this.handleGuess(guess);
+      this.handleFormSubmit();
     });
+
+    this.guess.addEventListener('keydown', e => {
+      const letterId = `letter-${e.key.toLowerCase()}`;
+      this.setLetterActivity(letterId, true);
+    });
+    this.guess.addEventListener('keyup', e => {
+      const letterId = `letter-${e.key.toLowerCase()}`;
+      this.setLetterActivity(letterId, false);
+    });
+
     document.body.addEventListener('click', e => {
       requestAnimationFrame(() => this.guess.focus());
     });
+
+    this.hint.addEventListener('click', e => {
+      this.handleHintClick();
+    });
+
+    this.shuffle.addEventListener('click', e => {
+      this.handleShuffleClick();
+    });
+
     this.guess.focus();
   }
 
-  getEl(id) {
-    const element = document.getElementById(id);
-
-    if (!element) {
-      throw `Element "${id}" not found`;
+  handleFormSubmit() {
+    if (!this.handleGuess) {
+      throw `Unhandled guess`;
     }
-
-    return element;
+    const guess = this.guess.value.toLowerCase();
+    this.handleGuess(guess);
   }
 
-  getFrag() {
-    return document.createDocumentFragment();
+  setLetterActivity(id, force) {
+    try {
+      const el = UI.getEl(id);
+      el.classList.toggle('active', force);
+    } catch (e) {
+      return;
+    }
+  }
+
+  handleHintClick() {
+    if (!this.handleHint) {
+      throw `Unhandled hint`;
+    }
+    this.handleHint();
+  }
+
+  handleShuffleClick() {
+    if (!this.handleShuffle) {
+      throw `Unhandled shuffle`;
+    }
+    this.handleShuffle();
   }
 
   renderLetters(letters) {
     // Top row, base letter, bottom row.
     const letterSequence = [1, 2, 3, 0, 4, 5, 6];
-    const fragment = this.getFrag();
+    const fragment = UI.getFrag();
     for (let i of letterSequence) {
       const letter = letters[i];
       const isBase = i === 0;
       const letterElement = this.getLetter(letter, isBase);
       fragment.appendChild(letterElement);
     }
+    this.letters.innerHTML = '';
     this.letters.appendChild(fragment);
   }
 
   getLetter(letter, isBase) {
     const element = document.createElement('button');
+    element.id = `letter-${letter}`;
     element.innerText = letter.toUpperCase();
     element.classList.add('letter');
     element.classList.toggle('base', isBase);
@@ -170,6 +245,9 @@ class UI {
     const deleteCount = Math.abs(end - start);
     letters.splice(start, deleteCount, letter);
     this.guess.value = letters.join('');
+    requestAnimationFrame(() => {
+      this.guess.setSelectionRange(start + 1, start + 1);
+    });
   }
 
   insertGuess(guess) {
@@ -193,10 +271,6 @@ class UI {
     this.guess.value = '';
   }
 
-  updateProgress(guesses, solution) {
-    this.progress.innerText = `Found ${guesses} of ${solution} words`;
-  }
-
   setToast(message) {
     this.toast.innerText = message;
     this.toast.classList.remove('hidden');
@@ -205,5 +279,12 @@ class UI {
     this.setToast.timeout = setTimeout(() => {
       this.toast.classList.add('hidden');
     }, 1000);
+  }
+
+  showHint(hint) {
+    this.guess.value = hint;
+    requestAnimationFrame(() => {
+      this.guess.setSelectionRange(hint.length, hint.length);
+    });
   }
 }
