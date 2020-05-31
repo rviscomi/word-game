@@ -101,7 +101,7 @@ export default class Game {
     const hint = hints[Math.floor(Math.random() * hints.length)];
     // Take random substring of hint.
     const percent = Math.random() * 100;
-    const letters = 3;
+    let letters = 3;
     if (percent < 0.1) {
       letters = hint.length;
     } else if (percent < 1) {
