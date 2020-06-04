@@ -87,17 +87,18 @@ export default class Game {
   }
 
   setCorrect(guess) {
+    const isPangram = new Set(guess).size >= 7;
     let message = GameUI.Message.CORRECT;
     this.guesses.add(guess);
 
     if (this.guesses.size === this.solution.size) {
       message = GameUI.Message.WIN;
-    } else if (new Set(guess).size >= 7) {
+    } else if (isPangram) {
       message = GameUI.Message.PANGRAM;
     }
 
     this.ui.setToast(message, 'good');
-    this.ui.insertGuess(guess);
+    this.ui.insertGuess(guess, isPangram ? 'pangram' : null);
 
     this.stats.foundWord = guess;
     this.stats.foundWords = this.guesses;
@@ -266,7 +267,11 @@ class GameUI {
   }
 
   insertGuess(guess, className) {
-    const element = document.createElement('div');
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('guess-wrapper');
+    const element = document.createElement('span');
+    wrapper.appendChild(element);
+
     element.innerText = guess;
     element.classList.add('guess');
     if (className) {
@@ -277,12 +282,12 @@ class GameUI {
     for (let i = 0; i < guesses.length; i++) {
       const child = guesses[i];
       if (child.textContent > guess) {
-        this.guesses.insertBefore(element, child);
+        this.guesses.insertBefore(wrapper, child);
         return;
       }
     }
 
-    this.guesses.appendChild(element);
+    this.guesses.appendChild(wrapper);
   }
 
   clearGuess() {
