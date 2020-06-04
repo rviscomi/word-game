@@ -53,8 +53,9 @@ export default class Stats {
     this.ui.toggleStats(force);
   }
 
-  countHint() {
-    this.hints++;
+  countHint(numHints) {
+    numHints = numHints || 1;
+    this.hints += numHints;
     this.ui.setHints(this.hints);
   }
 }

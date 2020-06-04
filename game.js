@@ -63,16 +63,24 @@ export default class Game {
   }
 
   checkGuess(guess) {
-    if (this.guesses.has(guess)) {
-      this.ui.setToast(GameUI.Message.REPEAT_GUESS);
+    guess = guess.toLowerCase();
+    if (guess === 'h') {
+      this.getHint();
+      return;
+    } else if (guess === 's') {
+      this.shuffle();
+    } else if (guess === 'konami code') {
+      this.cheat();
+    } else if (this.guesses.has(guess)) {
+      this.ui.setToast(GameUI.Message.REPEAT_GUESS, 'bad');
     } else if (guess.length < 4) {
-      this.ui.setToast(GameUI.Message.SHORT_GUESS);
+      this.ui.setToast(GameUI.Message.SHORT_GUESS, 'bad');
     } else if (this.solution.has(guess)) {
       this.setCorrect(guess);
     } else if (!guess.includes(this.letters[0])) {
-      this.ui.setToast(GameUI.Message.CENTER_LETTER);
+      this.ui.setToast(GameUI.Message.CENTER_LETTER, 'bad');
     } else {
-      this.ui.setToast(GameUI.Message.INCORRECT);
+      this.ui.setToast(GameUI.Message.INCORRECT, 'bad');
     }
 
     this.ui.clearGuess();
@@ -88,7 +96,7 @@ export default class Game {
       message = GameUI.Message.PANGRAM;
     }
 
-    this.ui.setToast(message);
+    this.ui.setToast(message, 'good');
     this.ui.insertGuess(guess);
 
     this.stats.foundWord = guess;
@@ -112,7 +120,7 @@ export default class Game {
     const partialHint = hint.substring(0, letters);
     // Show hint.
     this.ui.showHint(partialHint);
-    this.ui.setToast(`${hint.length} letters`)
+    this.ui.setToast(`${hint.length} letters`, 'magic')
     this.stats.countHint();
   }
 
@@ -126,6 +134,13 @@ export default class Game {
     }
     this.letters = letters.join('');
     this.ui.renderLetters(this.letters);
+  }
+
+  cheat() {
+    this.ui.setToast(GameUI.Message.WIN, 'magic');
+    this.ui.revealSolution(this.solution, this.guesses);
+    this.stats.foundWords = this.solution;
+    this.stats.countHint(this.solution.size - this.guesses.size);
   }
 }
 
@@ -250,10 +265,13 @@ class GameUI {
     });
   }
 
-  insertGuess(guess) {
+  insertGuess(guess, className) {
     const element = document.createElement('div');
     element.innerText = guess;
     element.classList.add('guess');
+    if (className) {
+      element.classList.add(className);
+    }
 
     const guesses = this.guesses.children;
     for (let i = 0; i < guesses.length; i++) {
@@ -271,9 +289,10 @@ class GameUI {
     this.guess.value = '';
   }
 
-  setToast(message) {
+  setToast(message, className) {
     this.toast.innerText = message;
-    this.toast.classList.remove('hidden');
+    this.toast.classList.remove('hidden', 'good', 'bad', 'magic');
+    this.toast.classList.add(className);
     clearTimeout(this.setToast.timeout);
 
     this.setToast.timeout = setTimeout(() => {
@@ -285,6 +304,16 @@ class GameUI {
     this.guess.value = hint;
     requestAnimationFrame(() => {
       this.guess.setSelectionRange(hint.length, hint.length);
+    });
+  }
+
+  revealSolution(solution, guesses) {
+    solution.forEach(word => {
+      if (guesses.has(word)) {
+        return;
+      }
+
+      this.insertGuess(word, 'cheat');
     });
   }
 }

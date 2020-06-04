@@ -50,6 +50,16 @@ body {
 #toast.hidden {
   opacity: 0;
 }
+#toast.good {
+  background-color: gold;
+  color: #222;
+}
+#toast.bad {
+  background-color: red;
+}
+#toast.magic {
+  background-color: purple;
+}
 
 #letters {
   width: 300px;
@@ -149,10 +159,11 @@ body {
 }
 #controls button {
   border: none;
+  border-radius: 3px;
   padding: 15px;
   background-color: #eee;
   color: #222;
-  text-transform: uppercase;:
+  text-transform: uppercase;
   font-size: 18px;
 }
 #controls button:focus,
@@ -172,6 +183,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  padding: 60px 0;
 }
 
 .guess {
@@ -180,6 +192,9 @@ body {
   text-transform: uppercase;
   font-size: 24px;
   color: #222;
+}
+.guess.cheat {
+  color: purple;
 }
 
 #stats {
