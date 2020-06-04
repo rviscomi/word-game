@@ -20,7 +20,7 @@ export default class Game {
     this.solution = this.getSolution();
 
     this.ui.init();
-    this.ui.renderLetters(this.letters);
+    this.shuffle();
     this.ui.handleGuess = this.checkGuess.bind(this);
     this.ui.handleHint = this.getHint.bind(this);
     this.ui.handleShuffle = this.shuffle.bind(this);
