@@ -41,7 +41,7 @@ export default class Game {
   getLetters() {
     let letters = this.getParam('letters');
     if (letters) {
-      return letters.toLowerCase();
+      return letters[0] + Array.from(letters.toLowerCase()).slice(1).sort().join('');
     }
 
     const candidates = Object.keys(this.puzzles);
