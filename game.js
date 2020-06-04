@@ -25,6 +25,7 @@ export default class Game {
     this.ui.handleHint = this.getHint.bind(this);
     this.ui.handleShuffle = this.shuffle.bind(this);
 
+    this.stats.init();
     this.stats.foundWords = this.guesses;
     this.stats.totalWordCount = this.solution.size;
     this.stats.toggleStats(this.getParam('stats') === null);
@@ -133,8 +134,8 @@ export default class Game {
       letters[i] = letters[j];
       letters[j] = temp;
     }
-    this.letters = letters.join('');
-    this.ui.renderLetters(this.letters);
+
+    this.ui.renderLetters(letters.join(''));
   }
 
   cheat() {
@@ -164,11 +165,15 @@ class GameUI {
     this.guesses = UI.getEl('guesses');
     this.hint = UI.getEl('hint');
     this.shuffle = UI.getEl('shuffle');
+    this.enter = UI.getEl('enter');
   }
 
   init() {
     this.form.addEventListener('submit', e => {
       e.preventDefault();
+      this.handleFormSubmit();
+    });
+    this.enter.addEventListener('click', e => {
       this.handleFormSubmit();
     });
 

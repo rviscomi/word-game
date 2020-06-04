@@ -9,6 +9,12 @@ export default class Stats {
     this.hints = 0;
   }
 
+  init() {
+    setInterval(() => {
+      this.updateWordsPerMinute();
+    }, 30000);
+  }
+
   set foundWord(foundWord) {
     if (foundWord.length > this.longest) {
       this.longest = foundWord.length;
@@ -38,8 +44,7 @@ export default class Stats {
     const avgLength = totalLength / foundWords.size;
     this.ui.setAverageWordLength(avgLength);
 
-    const wordsPerMinute = foundWords.size / ((Date.now() - this.startTime) / 60000);
-    this.ui.setWordsPerMinute(wordsPerMinute);
+    this.updateWordsPerMinute();
   }
 
   set totalWordCount(totalWordCount) {
@@ -47,6 +52,11 @@ export default class Stats {
     this.ui.setTotalWordCount(totalWordCount);
 
     this.ui.setProgress(this._foundWords?.size || 0, totalWordCount);
+  }
+
+  updateWordsPerMinute() {
+    const wordsPerMinute = this._foundWords.size / ((Date.now() - this.startTime) / 60000);
+    this.ui.setWordsPerMinute(wordsPerMinute);
   }
 
   toggleStats(force) {
