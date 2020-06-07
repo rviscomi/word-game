@@ -319,6 +319,10 @@ class GameUI {
     this.toast.classList.add(className);
     clearTimeout(this.setToast.timeout);
 
+    if (message == GameUI.Message.WIN) {
+      return;
+    }
+
     this.setToast.timeout = setTimeout(() => {
       this.toast.classList.add('hidden');
     }, 1000);
