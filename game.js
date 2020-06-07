@@ -90,19 +90,26 @@ export default class Game {
   setCorrect(guess) {
     const isPangram = new Set(guess).size >= 7;
     let message = GameUI.Message.CORRECT;
+
+    this.stats.foundWords = this.guesses;
+    this.stats.foundWord = guess;
     this.guesses.add(guess);
+    this.ui.insertGuess(guess, isPangram ? 'pangram' : null);
 
     if (this.guesses.size === this.solution.size) {
-      message = GameUI.Message.WIN;
-    } else if (isPangram) {
+      this.setGameOver();
+      return;
+    }
+
+    if (isPangram) {
       message = GameUI.Message.PANGRAM;
     }
 
     this.ui.setToast(message, 'good');
-    this.ui.insertGuess(guess, isPangram ? 'pangram' : null);
+  }
 
-    this.stats.foundWord = guess;
-    this.stats.foundWords = this.guesses;
+  setGameOver() {
+    this.ui.setToast(GameUI.Message.WIN, 'good');
   }
 
   getHint() {
@@ -139,6 +146,7 @@ export default class Game {
   }
 
   cheat() {
+    this.guesses = this.solution;
     this.ui.setToast(GameUI.Message.WIN, 'magic');
     this.ui.revealSolution(this.solution, this.guesses);
     this.stats.foundWords = this.solution;
@@ -186,9 +194,11 @@ class GameUI {
       this.setLetterActivity(letterId, false);
     });
 
-    document.body.addEventListener('click', e => {
-      requestAnimationFrame(() => this.guess.focus());
-    });
+    if (!this.isMobile()) {
+      document.body.addEventListener('click', e => {
+        requestAnimationFrame(() => this.guess.focus());
+      });
+    }
 
     this.hint.addEventListener('click', e => {
       this.handleHintClick();
@@ -199,6 +209,10 @@ class GameUI {
     });
 
     this.guess.focus();
+  }
+
+  isMobile() {
+    return matchMedia('(max-width: 900px)').matches;
   }
 
   handleFormSubmit() {
