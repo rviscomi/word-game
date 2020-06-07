@@ -73,18 +73,27 @@ body {
 }
 
 #letters {
-  width: 300px;
-  margin: 25px 0 0 -10px;
+  --hex-size: 60px;
+  /* This is the value of sin(120)/sin(30) AKA sqrt(3). */
+  /* CSS has no native sin() or sqrt() support yet. */
+  --hex-ratio: 1.7320508075688776;
+  --hex-width: var(--hex-size);
+  --hex-height: calc(var(--hex-ratio) * var(--hex-width));
+  --hex-gap: 5px;
+}
+#letters {
+  width: calc(5 * var(--hex-width) + (2 * var(--hex-gap)));
+  margin-top: 25px;
 }
 .letter {
   position: relative;
   border: none;
   padding: 0;
   margin: 0;
-  width: 60px;
-  height: 104px;
+  width: var(--hex-width);
+  height: var(--hex-height);
   background-color: var(--bg-color);
-  font-size: 60px;
+  font-size: var(--hex-size);
 }
 .letter:before,
 .letter:after {
@@ -92,16 +101,17 @@ body {
   position: absolute;
   top: 0;
   width: 0;
-  border-top: 52px solid transparent;
-  border-bottom: 52px solid transparent;
+  border-top: calc(var(--hex-height) / 2) solid transparent;
+  border-bottom: calc(var(--hex-height) / 2) solid transparent;
 }
 .letter:before {
-  left: -30px;
-  border-right: 30px solid var(--bg-color);
+  /* width / 2 */
+  left: calc(-1 * var(--hex-width) / 2);
+  border-right: calc(var(--hex-width) / 2) solid var(--bg-color);
 }
 .letter:after {
-  right: -30px;
-  border-left: 30px solid var(--bg-color);
+  right: calc(-1 * var(--hex-width) / 2);
+  border-left: calc(var(--hex-width) / 2) solid var(--bg-color);
 }
 
 .letter.base {
@@ -149,22 +159,20 @@ body {
   border-left-color: var(--dark-accent-color);
 }
 
-.letter:nth-child(n+2) {
-  margin-top: -50px;
-}
+.letter:nth-child(n+2),
 .letter:nth-child(n+5) {
-  margin-top: -48px;
+  margin-top: calc((-1 * var(--hex-height) / 2) + var(--hex-gap) / var(--hex-ratio));
 }
 .letter:nth-child(1),
 .letter:nth-child(4),
 .letter:nth-child(7) {
-  margin-left: 125px;
-  margin-right: 120px;
+  margin-left: calc(2 * var(--hex-width) + var(--hex-gap));
+  margin-right: calc(2 * var(--hex-width) + var(--hex-gap));
 }
 .letter:nth-child(2),
 .letter:nth-child(5) {
-  margin-left: 30px;
-  margin-right: 130px;
+  margin-left: calc(var(--hex-width) / 2);
+  margin-right: calc(2 * var(--hex-width) + 2 * var(--hex-gap));
 }
 
 #controls {
@@ -217,6 +225,7 @@ body {
   position: fixed;
   bottom: 0;
   right: 0;
+  border-top-left-radius: 3px;
   padding: 20px;
   width: 400px;
   /* Inverted colors */
@@ -225,14 +234,20 @@ body {
   max-height: 100vh;
 }
 #toggle-stats {
-  position: absolute;;
+  position: absolute;
   bottom: 100%;
   right: 5px;
+  border-radius: 3px 3px 0 0;
   border: none;
   padding: 5px;
   /* Inverted colors */
   background-color: var(--text-color);
   color: var(--bg-color);
+}
+#toggle-stats:focus,
+#toggle-stats:active {
+  outline: none;
+  color: var(--accent-color);
 }
 #expanded-stats.hidden {
   display: none;
@@ -258,5 +273,15 @@ body {
     flex-direction: row;
     max-height: unset;
     max-width: 100vw;
+  }
+}
+
+@media screen and (max-width: 900px) and (orientation: landscape) {
+  #letters {
+    --hex-size: 45px;
+    margin-top: 10px;
+  }
+  #controls {
+    margin-top: 10px;
   }
 }
