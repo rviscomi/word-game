@@ -64,6 +64,7 @@ body {
 }
 #toast.good {
   background-color: var(--accent-color);
+  color: var(--text-color);
 }
 #toast.bad {
   background-color: var(--error-color);
@@ -275,8 +276,13 @@ body {
     max-width: 100vw;
   }
 }
-
 @media screen and (max-width: 900px) and (orientation: landscape) {
+  #toast {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   #letters {
     --hex-size: 45px;
     margin-top: 10px;
