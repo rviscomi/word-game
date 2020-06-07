@@ -55,6 +55,8 @@ body {
   border-radius: 3px;
   padding: 5px 10px;
   min-height: 28px;
+  /* Inverted colors */
+  background-color: var(--text-color);
   color: var(--bg-color);
   font-size: 18px;
   transition: all 100ms;
