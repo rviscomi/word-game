@@ -146,11 +146,11 @@ export default class Game {
   }
 
   cheat() {
-    this.guesses = this.solution;
     this.ui.setToast(GameUI.Message.WIN, 'magic');
     this.ui.revealSolution(this.solution, this.guesses);
     this.stats.foundWords = this.solution;
     this.stats.countHint(this.solution.size - this.guesses.size);
+    this.guesses = this.solution;
   }
 }
 
