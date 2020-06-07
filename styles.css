@@ -1,3 +1,13 @@
+:root {
+  --bg-color: #eee;
+  --dark-bg-color: #ddd;
+  --text-color: #222;
+  --accent-color: gold;
+  --dark-accent-color: hsla(51, 100%, 45%, 1);
+  --magic-color: purple;
+  --error-color: red;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -8,6 +18,7 @@ body {
   padding: 0;
   font-family: sans-serif;
   height: 100vh;
+  color: var(--text-color);
 }
 
 #inputs {
@@ -20,7 +31,7 @@ body {
 
 #outputs {
   width: 100%;
-  background-color: #eee;
+  background-color: var(--bg-color);
 }
 
 #guess-form {
@@ -30,11 +41,10 @@ body {
 #guess {
   width: 100%;
   border: none;
-  color: #222;
   font-size: 60px;
   text-align: center;
   text-transform: uppercase;
-  caret-color: gold;
+  caret-color: var(--accent-color);
 }
 #guess:focus {
   outline: none;
@@ -45,8 +55,7 @@ body {
   border-radius: 3px;
   padding: 5px 10px;
   min-height: 28px;
-  background-color: #222;
-  color: #eee;
+  color: var(--bg-color);
   font-size: 18px;
   transition: all 100ms;
 }
@@ -54,14 +63,13 @@ body {
   opacity: 0;
 }
 #toast.good {
-  background-color: gold;
-  color: #222;
+  background-color: var(--accent-color);
 }
 #toast.bad {
-  background-color: red;
+  background-color: var(--error-color);
 }
 #toast.magic {
-  background-color: purple;
+  background-color: var(--magic-color);
 }
 
 #letters {
@@ -75,8 +83,7 @@ body {
   margin: 0;
   width: 60px;
   height: 104px;
-  background-color: #eee;
-  color: #222;
+  background-color: var(--bg-color);
   font-size: 60px;
 }
 .letter:before,
@@ -90,21 +97,21 @@ body {
 }
 .letter:before {
   left: -30px;
-  border-right: 30px solid #eee;
+  border-right: 30px solid var(--bg-color);
 }
 .letter:after {
   right: -30px;
-  border-left: 30px solid #eee;
+  border-left: 30px solid var(--bg-color);
 }
 
 .letter.base {
-  background-color: gold;
+  background-color: var(--accent-color);
 }
 .letter.base:before {
-  border-right-color: gold;
+  border-right-color: var(--accent-color);
 }
 .letter.base:after {
-  border-left-color: gold;
+  border-left-color: var(--accent-color);
 }
 
 .letter:focus {
@@ -112,15 +119,15 @@ body {
 }
 .letter:active,
 .letter.active {
-  background-color: #ddd;
+  background-color: var(--dark-bg-color);
 }
 .letter:active:before,
 .letter.active:before {
-  border-right-color: #ddd;
+  border-right-color: var(--dark-bg-color);
 }
 .letter:active:after,
 .letter.active:after {
-  border-left-color: #ddd;
+  border-left-color: var(--dark-bg-color);
 }
 
 .letter,
@@ -129,14 +136,17 @@ body {
   transition: all 100ms;
 }
 
-.letter.base:active {
-  background-color: hsla(51, 100%, 45%, 1);
+.letter.base:active,
+.letter.base.active {
+  background-color: var(--dark-accent-color);
 }
-.letter.base:active:before {
-  border-right-color: hsla(51, 100%, 45%, 1);
+.letter.base:active:before,
+.letter.base.active:before {
+  border-right-color: var(--dark-accent-color);
 }
-.letter.base:active:after {
-  border-left-color: hsla(51, 100%, 45%, 1);
+.letter.base:active:after,
+.letter.base.active:after {
+  border-left-color: var(--dark-accent-color);
 }
 
 .letter:nth-child(n+2) {
@@ -164,20 +174,18 @@ body {
   border: none;
   border-radius: 3px;
   padding: 15px;
-  background-color: #eee;
-  color: #222;
+  background-color: var(--bg-color);
   text-transform: uppercase;
   font-size: 18px;
 }
 #controls button:focus,
 #controls button:active {
   outline: none;
-  background-color: #ddd;
+  background-color: var(--dark-bg-color);
 }
 
 #progress {
   font-size: 26px;
-  color: #222;
 }
 
 #guesses {
@@ -197,10 +205,9 @@ body {
   padding: 5px;
   text-transform: uppercase;
   font-size: 24px;
-  color: #222;
 }
 .guess.cheat {
-  color: purple;
+  color: var(--magic-color);
 }
 .guess.pangram {
   background-color: gold;
@@ -212,8 +219,9 @@ body {
   right: 0;
   padding: 20px;
   width: 400px;
-  background-color: #222;
-  color: #eee;
+  /* Inverted colors */
+  background-color: var(--text-color);
+  color: var(--bg-color);
   max-height: 100vh;
 }
 #toggle-stats {
@@ -222,8 +230,9 @@ body {
   right: 5px;
   border: none;
   padding: 5px;
-  background-color: #222;
-  color: #eee;
+  /* Inverted colors */
+  background-color: var(--text-color);
+  color: var(--bg-color);
 }
 #expanded-stats.hidden {
   display: none;
@@ -234,12 +243,16 @@ body {
   top: 2px;
   left: 0;
   height: 2px;
-  background-color: gold;
+  background-color: var(--accent-color);
 }
 
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) and (orientation: portrait) {
   body {
     flex-direction: column;
+  }
+  #outputs {
+    margin-top: 30px;
+    height: 100%;
   }
   #guesses {
     flex-direction: row;
