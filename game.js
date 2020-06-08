@@ -70,6 +70,8 @@ export default class Game {
       return;
     } else if (guess === 's') {
       this.shuffle();
+    } else if (guess === 'f') {
+      this.ui.toggleFullscreen();
     } else if (guess === 'konami code') {
       this.cheat();
     } else if (this.guesses.has(guess)) {
@@ -343,5 +345,18 @@ class GameUI {
 
       this.insertGuess(word, 'cheat');
     });
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenEnabled) {
+      this.setToast('Fullscreen disabled', 'bad');
+      return;
+    }
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen();
+    }
   }
 }
