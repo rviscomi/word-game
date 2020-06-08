@@ -90,7 +90,7 @@ export default class Game {
   }
 
   setCorrect(guess) {
-    const isPangram = new Set(guess).size >= 7;
+    const isPangram = this.isPangram(guess);
     let message = GameUI.Message.CORRECT;
 
     this.stats.foundWords = this.guesses;
@@ -108,6 +108,10 @@ export default class Game {
     }
 
     this.ui.setToast(message, 'good');
+  }
+
+  isPangram(guess) {
+    return new Set(guess).size >= 7;
   }
 
   setGameOver() {
@@ -149,9 +153,24 @@ export default class Game {
 
   cheat() {
     this.ui.setToast(GameUI.Message.WIN, 'magic');
-    this.ui.revealSolution(this.solution, this.guesses);
     this.stats.foundWords = this.solution;
     this.stats.countHint(this.solution.size - this.guesses.size);
+
+
+    this.solution.forEach(word => {
+      if (this.guesses.has(word)) {
+        return;
+      }
+
+      let className = 'magic';
+
+      if (this.isPangram(word)) {
+        className += ' pangram';
+      }
+
+      this.ui.insertGuess(word, className);
+    });
+
     this.guesses = this.solution;
   }
 }
@@ -287,7 +306,7 @@ class GameUI {
     });
   }
 
-  insertGuess(guess, className) {
+  insertGuess(guess, classNames) {
     const wrapper = document.createElement('div');
     wrapper.classList.add('guess-wrapper');
     const element = document.createElement('span');
@@ -295,8 +314,10 @@ class GameUI {
 
     element.innerText = guess;
     element.classList.add('guess');
-    if (className) {
-      element.classList.add(className);
+    if (classNames) {
+      classNames.split(' ').forEach(className => {
+        element.classList.add(className);
+      });
     }
 
     const guesses = this.guesses.children;
@@ -334,16 +355,6 @@ class GameUI {
     this.guess.value = hint;
     requestAnimationFrame(() => {
       this.guess.setSelectionRange(hint.length, hint.length);
-    });
-  }
-
-  revealSolution(solution, guesses) {
-    solution.forEach(word => {
-      if (guesses.has(word)) {
-        return;
-      }
-
-      this.insertGuess(word, 'cheat');
     });
   }
 
