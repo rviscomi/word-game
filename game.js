@@ -93,9 +93,9 @@ export default class Game {
     const isPangram = this.isPangram(guess);
     let message = GameUI.Message.CORRECT;
 
+    this.guesses.add(guess);
     this.stats.foundWords = this.guesses;
     this.stats.foundWord = guess;
-    this.guesses.add(guess);
     this.ui.insertGuess(guess, isPangram ? 'pangram' : null);
 
     if (this.guesses.size === this.solution.size) {
