@@ -116,6 +116,7 @@ export default class Game {
 
   setGameOver() {
     this.ui.setToast(GameUI.Message.WIN, 'good');
+    this.stats.clearTimer();
   }
 
   getHint() {

@@ -10,7 +10,7 @@ export default class Stats {
   }
 
   init() {
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.updateWordsPerMinute();
     }, 30000);
   }
@@ -67,6 +67,10 @@ export default class Stats {
     numHints = numHints || 1;
     this.hints += numHints;
     this.ui.setHints(this.hints);
+  }
+
+  clearTimer() {
+    clearTimeout(this.timer);
   }
 }
 
