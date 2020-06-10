@@ -74,18 +74,19 @@ export default class Stats {
   }
 }
 
-class StatsUI {
+class StatsUI extends UI {
   constructor() {
-    this.toggleButton = UI.getEl('toggle-stats');
-    this.expandedStats = UI.getEl('expanded-stats');
-    this.progressBar = UI.getEl('progress-bar');
-    this.foundWordCount = UI.getEl('found');
-    this.totalWordCount = UI.getEl('total');
-    this.longestWordCount = UI.getEl('longest');
-    this.mostLetters = UI.getEl('most-letters');
-    this.avgLength = UI.getEl('avg-length');
-    this.wordsPerMinute = UI.getEl('wpm');
-    this.hints = UI.getEl('hints');
+    super();
+    this.toggleButton = StatsUI.getEl('toggle-stats');
+    this.expandedStats = StatsUI.getEl('expanded-stats');
+    this.progressBar = StatsUI.getEl('progress-bar');
+    this.foundWordCount = StatsUI.getEl('found');
+    this.totalWordCount = StatsUI.getEl('total');
+    this.longestWordCount = StatsUI.getEl('longest');
+    this.mostLetters = StatsUI.getEl('most-letters');
+    this.avgLength = StatsUI.getEl('avg-length');
+    this.wordsPerMinute = StatsUI.getEl('wpm');
+    this.hints = StatsUI.getEl('hints');
 
     this.init();
   }
