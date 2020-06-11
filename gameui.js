@@ -33,6 +33,11 @@ export default class GameUI extends UI {
     });
 
     this.guess.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        this.clearGuess();
+        return;
+      }
+
       const letterId = `letter-${e.key.toLowerCase()}`;
       this.setLetterActivity(letterId, true);
     });

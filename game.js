@@ -86,7 +86,7 @@ export default class Game {
     if (guess === 'h') {
       this.getHint();
       return;
-    } else if (guess === 's') {
+    } else if (guess === 's' || guess === ' ') {
       this.shuffle();
     } else if (guess === 'f') {
       this.ui.toggleFullscreen();
