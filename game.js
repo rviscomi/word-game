@@ -34,6 +34,7 @@ export default class Game {
 
     this.stats.init();
     this.stats.foundWords = this.guesses;
+    this.stats.maxPoints = this.stats.getTotalPoints(this.solution);
     this.stats.totalWordCount = this.solution.size;
     this.stats.toggleStats(this.getParam('stats') === null);
   }
@@ -110,7 +111,7 @@ export default class Game {
   }
 
   setCorrect(guess) {
-    const isPangram = this.isPangram(guess);
+    const isPangram = this.stats.isPangram(guess);
     let message = GameUI.Message.CORRECT;
     const className = isPangram ? 'pangram' : null;
 
@@ -130,10 +131,6 @@ export default class Game {
     }
 
     this.ui.setToast(message, 'good');
-  }
-
-  isPangram(guess) {
-    return new Set(guess).size >= 7;
   }
 
   setGameOver() {
@@ -187,7 +184,7 @@ export default class Game {
 
       let classNames = 'magic';
 
-      if (this.isPangram(word)) {
+      if (this.stats.isPangram(word)) {
         classNames += ' pangram';
       }
 

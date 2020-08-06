@@ -36,6 +36,9 @@ export default class Stats {
       this.ui.setProgress(foundWords.size, this._totalWordCount);
     }
 
+    this._points = this.getTotalPoints(foundWords);
+    this.ui.setPoints(this._points, this._maxPoints);
+
     if (!foundWords.size) {
       return;
     }
@@ -45,13 +48,42 @@ export default class Stats {
     this.ui.setAverageWordLength(avgLength);
 
     this.updateWordsPerMinute();
+
+    this.ui.setFoundPercent(`${(foundWords.size * 100 / this._totalWordCount).toFixed(0)}%`);
+  }
+
+  set maxPoints(points) {
+    this._maxPoints = points;
+    this.ui.setMaxPoints(points);
   }
 
   set totalWordCount(totalWordCount) {
     this._totalWordCount = totalWordCount;
     this.ui.setTotalWordCount(totalWordCount);
+  }
 
-    this.ui.setProgress(this._foundWords?.size || 0, totalWordCount);
+  getTotalPoints(words) {
+    return Array.from(words).reduce((sum, word) => {
+      return sum += this.getPoints(word);
+    }, 0);
+  }
+
+  getPoints(word) {
+    if (word.length <= 4) {
+      return 1;
+    } else if (word.length == 5) {
+      return 2;
+    } else if (word.length == 6) {
+      return 3;
+    } else if (word.length >= 7 && !this.isPangram(word)) {
+      return 5;
+    } else {
+      return 7;
+    }
+  }
+
+  isPangram(word) {
+    return new Set(word).size >= 7;
   }
 
   updateWordsPerMinute() {
@@ -80,7 +112,10 @@ class StatsUI extends UI {
     this.toggleButton = StatsUI.getEl('toggle-stats');
     this.expandedStats = StatsUI.getEl('expanded-stats');
     this.progressBar = StatsUI.getEl('progress-bar');
+    this.points = StatsUI.getEl('num-points');
+    this.maxPoints = StatsUI.getEl('max-points');
     this.foundWordCount = StatsUI.getEl('found');
+    this.foundPercent = StatsUI.getEl('found-pct');
     this.totalWordCount = StatsUI.getEl('total');
     this.longestWordCount = StatsUI.getEl('longest');
     this.mostLetters = StatsUI.getEl('most-letters');
@@ -101,6 +136,19 @@ class StatsUI extends UI {
     this.expandedStats.classList.toggle('hidden', force);
   }
 
+  setPoints(points, maxPoints) {
+    this.points.innerText = points;
+    this.setMaxPoints(maxPoints);
+
+    if (maxPoints) {
+      this.setProgress(points, maxPoints);
+    }
+  }
+
+  setMaxPoints(points) {
+    this.maxPoints.innerText = points;
+  }
+
   setFoundWordCount(foundWordCount) {
     this.foundWordCount.innerText = foundWordCount;
   }
@@ -109,8 +157,12 @@ class StatsUI extends UI {
     this.totalWordCount.innerText = totalWordCount;
   }
 
-  setProgress(foundWordCount, totalWordCount) {
-    this.progressBar.style.width = `${foundWordCount * 100 / totalWordCount}%`;
+  setFoundPercent(foundPercent) {
+    this.foundPercent.innerText = foundPercent;
+  }
+
+  setProgress(points, maxPoints) {
+    this.progressBar.style.width = `${points * 100 / maxPoints}%`;
   }
 
   setLongestWordCount(longestWordCount) {

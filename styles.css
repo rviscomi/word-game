@@ -194,6 +194,9 @@ body {
   outline: none;
   background-color: var(--dark-bg-color);
 }
+.shortcut {
+  border-bottom: 1px dashed;
+}
 
 #progress {
   font-size: 26px;
@@ -262,6 +265,9 @@ body {
   left: 0;
   height: 2px;
   background-color: var(--accent-color);
+}
+#points {
+  font-size: 1.2rem;
 }
 
 @media screen and (max-width: 900px) and (orientation: portrait) {
