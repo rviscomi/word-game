@@ -33,9 +33,9 @@ export default class Game {
     });
 
     this.stats.init();
+    this.stats.totalWordCount = this.solution.size;
     this.stats.foundWords = this.guesses;
     this.stats.maxPoints = this.stats.getTotalPoints(this.solution);
-    this.stats.totalWordCount = this.solution.size;
     this.stats.toggleStats(this.getParam('stats') === null);
   }
 
