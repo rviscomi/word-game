@@ -38,6 +38,12 @@ export default class GameUI extends UI {
         return;
       }
 
+      if (e.key === ' ' && e.target.value.trim().length === 0) {
+        e.preventDefault();
+        this.handleShuffleClick();
+        return;
+      }
+
       const letterId = `letter-${e.key.toLowerCase()}`;
       this.setLetterActivity(letterId, true);
     });
