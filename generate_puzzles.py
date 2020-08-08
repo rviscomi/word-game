@@ -44,9 +44,12 @@ def get_puzzles():
       # Some words in the dictionary have apostrophes.
       continue
 
-    solution = solver.getMatches(puzzle)
-    difficulty = get_difficulty(solution)
-    puzzles[difficulty][puzzle] = solution
+    for i in range(len(puzzle)):
+      puzzle = puzzle[i] + puzzle[:i] + puzzle[i+1:]
+
+      solution = solver.getMatches(puzzle)
+      difficulty = get_difficulty(solution)
+      puzzles[difficulty][puzzle] = solution
 
   return puzzles
 
