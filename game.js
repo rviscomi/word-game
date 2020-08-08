@@ -6,6 +6,7 @@ export default class Game {
   constructor() {
     this.ui = new GameUI();
     this.stats = new Stats();
+    this.storage = new Storage();
     this.difficulty = this.getDifficulty();
     this.letters = null;
     this.solution = null;
@@ -20,18 +21,34 @@ export default class Game {
     this.letters = this.getLetters();
     this.solution = this.getSolution();
 
+    if (this.ui) {
+      this.initUI();
+    }
+    if (this.storage) {
+      this.initStorage();
+    }
+    if(this.stats) {
+      this.initStats();
+    }
+  }
+
+  initUI() {
     this.ui.init();
-    this.shuffle();
     this.ui.handleGuess = this.checkGuess.bind(this);
     this.ui.handleHint = this.getHint.bind(this);
     this.ui.handleShuffle = this.shuffle.bind(this);
+    this.shuffle();
+  }
 
-    this.storage = new Storage(this.letters);
+  initStorage() {
+    this.storage.init(this.letters);
     const guesses = this.storage.getGuesses().forEach(({guess, classNames}) => {
       this.guesses.add(guess);
       this.ui.insertGuess(guess, classNames);
     });
+  }
 
+  initStats() {
     this.stats.init();
     this.stats.totalWordCount = this.solution.size;
     this.stats.foundWords = this.guesses;

@@ -13,6 +13,10 @@ export default class GameUI extends UI {
 
   constructor() {
     super();
+    this.initElements();
+  }
+
+  initElements() {
     this.letters = GameUI.getEl('letters');
     this.guess = GameUI.getEl('guess');
     this.form = GameUI.getEl('guess-form');

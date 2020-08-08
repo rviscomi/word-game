@@ -1,5 +1,8 @@
 export default class Storage {
-  constructor(letters) {
+  constructor() {
+  }
+
+  init(letters) {
     this.letters = letters;
     this.state = this.getState();
   }
