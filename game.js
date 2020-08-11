@@ -64,10 +64,14 @@ export default class Game {
     return this.getParam('difficulty') || 'easy';
   }
 
+  sortLetters(letters) {
+    return letters[0] + Array.from(letters.toLowerCase()).slice(1).sort().join('');
+  }
+
   getLetters() {
     let letters = this.getParam('letters');
     if (letters) {
-      return letters[0] + Array.from(letters.toLowerCase()).slice(1).sort().join('');
+      return letters.toLowerCase();
     }
 
     const candidates = Object.keys(this.puzzles);
@@ -109,7 +113,7 @@ export default class Game {
     } else if (guess === 'f') {
       this.ui.toggleFullscreen();
     } else if (guess === 'l') {
-      this.setParam('letters', this.letters);
+      this.setParam('letters', this.sortLetters(this.letters));
     } else if (guess === 'konami code') {
       this.cheat();
     } else if (this.guesses.has(guess)) {
