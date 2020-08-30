@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-27898822-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-27898822-2');
+    </script>
+    <style>
+#letters,
+#guess {
+  font-size: 40px;
+}
+    </style>
+  </head>
+  <body>
+    <div id="result">Loading&hellip;</div>
+    <div id="letters"></div>
+    <div><span id="correct-guesses-size">0</span> of <span id="solution-size">0</span> pangrams: <span id="correct-guesses"></span></div>
+    <form id="guess-form">
+      <input id="guess" autocomplete="off">
+    </form>
+    <script type="module">
+const result = document.getElementById('result');
+const letters = document.getElementById('letters');
+const correctGuesses = document.getElementById('correct-guesses');
+const correctGuessesSize = document.getElementById('correct-guesses-size');
+const solutionSize = document.getElementById('solution-size');
+const guessForm = document.getElementById('guess-form');
+const guess = document.getElementById('guess');
+let solution = new Set();
+
+fetch('./pangrams.json').then(r => r.json()).then(solutions => {
+  const pangrams = Object.keys(solutions);
+  const pangram = pangrams[Math.floor(Math.random() * pangrams.length)];
+  solution = new Set(solutions[pangram]);
+
+  letters.innerText = pangram.toUpperCase();
+  solutionSize.innerText = solution.size;
+  result.innerText = '';
+  guess.focus();
+  console.log(solution)
+});
+
+guessForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const _guess = guess.value.toLowerCase();
+  guess.value = '';
+
+  if (!solution.has(_guess)) {
+    result.innerText = 'Incorrect';
+    return;
+  }
+
+  let _correctGuesses = correctGuesses.dataset.guesses?.split(' ') || [];
+  _correctGuesses.push(_guess);
+  correctGuesses.dataset.guesses = _correctGuesses.join(' ');
+  correctGuesses.innerText = _correctGuesses.map(g => g.toUpperCase()).join(', ');
+  correctGuessesSize.innerText = _correctGuesses.length;
+  result.innerText = 'Correct!';
+
+  if (_correctGuesses.length == solution.size) {
+    result.innerText = 'You Win!';
+  }
+});
+    </script>
+  </body>
+</html>
